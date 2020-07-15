@@ -3,6 +3,29 @@
 import psycopg2
 import pandas as pd
 import getpass 
+import yaml
+import pickle
+import logging
+import os
+
+logging.getLogger().setLevel(logging.WARNING)
+logging.warning("logging check")
+
+def get_config(config_file):
+    current_path = os.getcwd()
+    print("current directory is: "+current_path)
+
+    path_to_yaml = os.path.join(current_path, config_file)
+    print("path_to_yaml "+path_to_yaml)
+    try:
+        with open (path_to_yaml, 'r') as c_file:
+            config = yaml.safe_load(c_file)
+        return(config)
+    except Exception as e:
+        print('Error reading the config file')
+    
+        
+
 
 def get_pw():
     try: 
@@ -35,7 +58,7 @@ def get_catalog_df(user,pw,host,port,db):
         i = 0
         table_list = []
         for item in record_list:
-            print("record ",str(i)," is:", item,"\n")
+            logging.debug("record "+str(i)+" is:"+str(item)+"\n")
             table_list = table_list + list(item)
             i = i+1
         print("table_list is ",table_list)
@@ -44,7 +67,7 @@ def get_catalog_df(user,pw,host,port,db):
         i = 0
         table_table_cols_list = []
         for item_col in record_col_spec:
-            print("record cols from tables table ",str(i)," is:", item_col,"\n")
+            logging.debug("record cols from tables table "+str(i)+" is:"+str(item_col)+"\n")
             table_table_cols_list = table_table_cols_list + list(item_col)
             i = i+1
         print("table_table_cols_list is ",table_table_cols_list)
@@ -53,7 +76,7 @@ def get_catalog_df(user,pw,host,port,db):
         record_col_details = cursor.fetchall()
         col_details_list = []
         for item_col in record_col_details:
-            print("record cols from tables table ",str(i)," is:", item_col,"\n")
+            logging.debug("record cols from tables table "+str(i)+" is:"+str(item_col)+"\n")
             # table_table_cols_list = table_table_cols_list + list(item_col)
             col_details_list.append(item_col)
             i = i+1
@@ -73,10 +96,11 @@ def get_catalog_df(user,pw,host,port,db):
             
 def main():
   print("Hello World!")
+  config = get_config('scrape_db_catalog_config.yml')
   pw = get_pw()
   print("Got pw")
-  # get dataframe with db catalog details
-  catalog_df = get_catalog_df("postgres",pw,"127.0.0.1","5432","dvdrental")
+  # get dataframe with db catalog details, using parameters from config file
+  catalog_df = get_catalog_df(config['general']['user'],pw,config['general']['host'],config['general']['port'],config['general']['database'])
   print(catalog_df.head(40))
   
   
