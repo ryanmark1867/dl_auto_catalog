@@ -3,3 +3,6 @@ general:
    host: "127.0.0.1"
    port: "5432"
    database: "dvdrental"
+files:
+   modifier: "july15"
+   output_pickle_name: "catalog_df"

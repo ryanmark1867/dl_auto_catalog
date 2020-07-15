@@ -93,7 +93,22 @@ def get_catalog_df(user,pw,host,port,db):
                 print("PostgreSQL connection is closed")
             return(df)
             
+def get_path():
+    ''' get the path for data files '''
+    rawpath = os.getcwd()
+    # data is in a directory called "data" that is a sibling to the directory containing the notebook
+    path = os.path.abspath(os.path.join(rawpath, '..', 'data'))
+    return(path)
+
+def save_catalog_df(df,pickle_name,modifier):
+    ''' persist a dataframe as a pickle file with the specified filename and path '''
+    file_name = pickle_name+'_'+modifier+'.pkl'
+    pickle_path = os.path.join(get_path(),file_name)
+    logging.debug("output file_name is "+str(pickle_path))
+    df.to_pickle(pickle_path)
             
+
+
 def main():
   print("Hello World!")
   config = get_config('scrape_db_catalog_config.yml')
@@ -101,6 +116,8 @@ def main():
   print("Got pw")
   # get dataframe with db catalog details, using parameters from config file
   catalog_df = get_catalog_df(config['general']['user'],pw,config['general']['host'],config['general']['port'],config['general']['database'])
+  # save the df as a pickle file
+  save_catalog_df(catalog_df,config['files']['output_pickle_name'],config['files']['modifier'])
   print(catalog_df.head(40))
   
   
