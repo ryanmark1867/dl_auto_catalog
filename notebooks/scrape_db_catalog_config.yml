@@ -3,6 +3,14 @@ general:
    host: "127.0.0.1"
    port: "5432"
    database: "dvdrental"
+query_scope:
+   cols:
+     - column_name 
+     - data_type 
+     - table_name
+   from_table: "information_schema.columns"
+   schema: public
+   order_by_col: table_name
 files:
    modifier: "july15"
    output_pickle_name: "catalog_df"

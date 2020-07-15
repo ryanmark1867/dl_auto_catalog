@@ -12,14 +12,10 @@
 
 1. Install Postgres https://www.postgresql.org/download/ including pgadmin
 2. follow instructions to create sample db: https://www.postgresqltutorial.com/postgresql-sample-database/
-3. once you have created the sample db, update the config file notebooks/scrape_db_catalog_config.yml to ensure that the user, host, port and database settings are correct
-general:
-   user: "postgres" # user ID for the connection
-   host: "127.0.0.1" # host for the database - default is localhost
-   port: "5432"	# port for the database
-   database: "dvdrental" # database name
+3. once you have created the sample db, update the config file notebooks/scrape_db_catalog_config.yml to ensure that the **user, host, port** and **database** settings match the credentials for your database
 4. run notebooks/scrape_db_catalog.py. This module will:
-- connect to the database using the credentials you specified in the config file
+- prompt you to enter the Postgres password corresponding with the **user** you specified in the config file
+- connect to the database using the credentials you specified in the config file and the password you supplied interactively
 - run a query to get details about the columns of every table in the specified schema
 - save the results of the query in a dataframe that gets persisted as a pickle file
 
@@ -27,4 +23,4 @@ general:
 ## Background
 
 - Postgres catalog: https://pynative.com/python-postgresql-tutorial/
-- 
+- main repo for **Deep Learning with Structured Data**: https://github.com/ryanmark1867/deep_learning_for_structured_data

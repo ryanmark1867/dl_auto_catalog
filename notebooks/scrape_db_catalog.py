@@ -35,7 +35,7 @@ def get_pw():
     else: 
         return(pw) 
 
-def get_catalog_df(user,pw,host,port,db):
+def get_catalog_df(user,pw,host,port,db,col_list,from_table,schema,order_by_col):
     try:
         connection = psycopg2.connect(user = user,
                                       password = pw,
@@ -72,7 +72,11 @@ def get_catalog_df(user,pw,host,port,db):
             i = i+1
         print("table_table_cols_list is ",table_table_cols_list)
         # create a dataframe with details about the columns
-        cursor.execute("SELECT column_name, data_type, table_name FROM information_schema.columns where table_schema='public' order by table_name")
+        col_string = ", ".join(col_list)
+        query_string = "SELECT "+col_string+"  FROM "+from_table+" where table_schema='"+schema+"' order by "+order_by_col
+        logging.debug("query string is "+query_string)
+        #cursor.execute("SELECT column_name, data_type, table_name FROM information_schema.columns where table_schema='public' order by table_name")
+        cursor.execute(query_string)
         record_col_details = cursor.fetchall()
         col_details_list = []
         for item_col in record_col_details:
@@ -115,7 +119,7 @@ def main():
   pw = get_pw()
   print("Got pw")
   # get dataframe with db catalog details, using parameters from config file
-  catalog_df = get_catalog_df(config['general']['user'],pw,config['general']['host'],config['general']['port'],config['general']['database'])
+  catalog_df = get_catalog_df(config['general']['user'],pw,config['general']['host'],config['general']['port'],config['general']['database'],config['query_scope']['cols'],config['query_scope']['from_table'],config['query_scope']['schema'],config['query_scope']['order_by_col'])
   # save the df as a pickle file
   save_catalog_df(catalog_df,config['files']['output_pickle_name'],config['files']['modifier'])
   print(catalog_df.head(40))
