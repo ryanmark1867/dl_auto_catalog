@@ -9,8 +9,10 @@ query_scope:
      - data_type 
      - table_name
    from_table: "information_schema.columns"
+   to_df_table: "customer"
    schema: public
    order_by_col: table_name
 files:
    modifier: "july15"
    output_pickle_name: "catalog_df"
+   output_table_df_pickle_name: "table_df"

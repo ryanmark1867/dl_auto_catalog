@@ -1,12 +1,12 @@
 # Module to:
 # - create a connection to a Postgres db using credentials read from a config file (pw provided interactively)
-# - build an SQL query to extract metadata from the Postgres catalog with col list, target table, schema and condition value read from a config file
-# - save the result in a dataframe
+# - load the contents of the table into a Pandas dataframe
 # - persist the dataframe as a pickle file
-# postgres db connection code - from https://pynative.com/python-postgresql-tutorial/
+# postgres db connection code - from https://pynative.com/python-postgresql-tutorial/ and https://pythontic.com/pandas/serialization/postgresql#:~:text=Data%20from%20a%20PostgreSQL%20table,SQLAlchemy%20Engine%20as%20a%20parameter.
 # 
 
 import psycopg2
+from sqlalchemy import create_engine
 import pandas as pd
 import getpass 
 import yaml
@@ -39,7 +39,28 @@ def get_pw():
     except Exception as error: 
         print('ERROR', error) 
     else: 
-        return(pw) 
+        return(pw)
+
+def load_df_from_table(user,pw,host,port,db,table):
+    try:
+        # dialect+driver://username:password@host:port/database
+        connection_url = "postgresql+psycopg2://"+user+":"+pw+"@"+host+":"+port+"/"+db
+        logging.debug("connection_url is: "+connection_url)
+        # create connection, recycle after 1 hour = 3600 seconds
+        alchemyEngine   = create_engine(connection_url, pool_recycle=3600)
+        # connect to the server
+        # Connect to PostgreSQL server
+        dbConnection    = alchemyEngine.connect()
+        # load dataframe
+        query_string = "select * from "+table
+        logging.debug("query_string is: "+query_string)
+        df  = pd.read_sql(query_string, dbConnection)
+    except (Exception, psycopg2.Error) as error :
+        print ("Error while connecting to PostgreSQL", error)
+    finally:
+        #closing database connection.
+            dbConnection.close()
+            return(df)
 
 def get_catalog_df(user,pw,host,port,db,col_list,from_table,schema,order_by_col):
     try:
@@ -124,11 +145,11 @@ def main():
   config = get_config('scrape_db_catalog_config.yml')
   pw = get_pw()
   print("Got pw")
-  # get dataframe with db catalog details, using parameters from config file
-  catalog_df = get_catalog_df(config['general']['user'],pw,config['general']['host'],config['general']['port'],config['general']['database'],config['query_scope']['cols'],config['query_scope']['from_table'],config['query_scope']['schema'],config['query_scope']['order_by_col'])
+  # load table (with table name and credentials coming from config file) into df
+  table_df = load_df_from_table(config['general']['user'],pw,config['general']['host'],config['general']['port'],config['general']['database'],config['query_scope']['to_df_table'])
   # save the df as a pickle file
-  save_catalog_df(catalog_df,config['files']['output_pickle_name'],config['files']['modifier'])
-  print(catalog_df.head(40))
+  save_catalog_df(table_df,config['files']['output_table_df_pickle_name'],config['files']['modifier'])
+  print(table_df.head(40))
   
   
    
