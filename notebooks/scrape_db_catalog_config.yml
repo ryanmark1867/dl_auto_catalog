@@ -15,4 +15,5 @@ query_scope:
 files:
    modifier: "july15"
    output_pickle_name: "catalog_df"
+   input_pickle_name: "catalog_df_july15.pkl"
    output_table_df_pickle_name: "table_df"

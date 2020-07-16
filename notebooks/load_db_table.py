@@ -149,7 +149,12 @@ def main():
   table_df = load_df_from_table(config['general']['user'],pw,config['general']['host'],config['general']['port'],config['general']['database'],config['query_scope']['to_df_table'])
   # save the df as a pickle file
   save_catalog_df(table_df,config['files']['output_table_df_pickle_name'],config['files']['modifier'])
+  catalog_df = pd.read_pickle(os.path.join(get_path(),config['files']['input_pickle_name']))
+  # get the columns for this table
+  col_list = catalog_df[catalog_df['table_name']==config['query_scope']['to_df_table']]['column_name']
   print(table_df.head(40))
+  print("rows in table "+config['query_scope']['to_df_table']+" "+str(len(table_df)))
+  print("columns in table "+str(col_list))
   
   
    
