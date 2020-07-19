@@ -108,34 +108,6 @@ def get_catalog_df(
         record = cursor.fetchone()
         # fetchone(), fetchmany(), fetcthall()
         print("You are connected to - ", record, "\n")
-        '''
-        cursor.execute(
-            "SELECT table_name FROM information_schema.tables where table_schema='public';")
-        record_list = cursor.fetchall()
-        i = 0
-        table_list = []
-        for item in record_list:
-            logging.debug("record " + str(i) + " is:" + str(item) + "\n")
-            table_list = table_list + list(item)
-            i = i + 1
-        print("table_list is ", table_list)
-        cursor.execute(
-            "SELECT column_name FROM information_schema.columns
-            where table_name = 'tables' LIMIT 10")
-        record_col_spec = cursor.fetchall()
-        i = 0
-        table_table_cols_list = []
-        for item_col in record_col_spec:
-            logging.debug(
-                "record cols from tables table " +
-                str(i) +
-                " is:" +
-                str(item_col) +
-                "\n")
-            table_table_cols_list = table_table_cols_list + list(item_col)
-            i = i + 1
-        print("table_table_cols_list is ", table_table_cols_list)
-        '''
         # create a dataframe with details about the columns
         i = 0
         col_string = ", ".join(col_list)
@@ -161,8 +133,6 @@ def get_catalog_df(
                 'column_name',
                 'data_type',
                 'table_name'])
-        # print(df.head(40))
-
     except (Exception, psycopg2.Error) as error:
         print("Error while connecting to PostgreSQL", error)
     finally:
@@ -205,7 +175,7 @@ def save_catalog_df(df, pickle_name, modifier):
 
 
 def main():
-    ''' main function for module - ingest config file, 
+    ''' main function for module - ingest config file,
     get dataframe containing catalog details, and save as a pickle file'''
     print("Hello World!")
     config = get_config('scrape_db_catalog_config.yml')
@@ -232,5 +202,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-print("next thing")
