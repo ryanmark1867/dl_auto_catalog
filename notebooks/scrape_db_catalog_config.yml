@@ -13,7 +13,7 @@ query_scope:
    schema: public
    order_by_col: table_name
 files:
-   modifier: "july15"
+   modifier: "july19"
    output_pickle_name: "catalog_df"
    input_pickle_name: "catalog_df_july15.pkl"
    output_table_df_pickle_name: "table_df"
