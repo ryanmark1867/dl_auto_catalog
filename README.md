@@ -22,5 +22,5 @@
 
 ## Background
 
-- Postgres catalog: https://pynative.com/python-postgresql-tutorial/
+- Python PostgreSQL Tutorial Using Psycopg2: https://pynative.com/python-postgresql-tutorial/
 - main repo for **Deep Learning with Structured Data**: https://github.com/ryanmark1867/deep_learning_for_structured_data

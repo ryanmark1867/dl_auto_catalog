@@ -97,16 +97,12 @@ def get_catalog_df(
                                       host=host,
                                       port=port,
                                       database=db)
-
         cursor = connection.cursor()
         # Print PostgreSQL Connection properties
-        print("updated HERE")
         print(connection.get_dsn_parameters(), "\n")
-
         # Print PostgreSQL version
         cursor.execute("SELECT version();")
         record = cursor.fetchone()
-        # fetchone(), fetchmany(), fetcthall()
         print("You are connected to - ", record, "\n")
         # create a dataframe with details about the columns
         i = 0
@@ -129,10 +125,7 @@ def get_catalog_df(
             i = i + 1
         df = pd.DataFrame(
             col_details_list,
-            columns=[
-                'column_name',
-                'data_type',
-                'table_name'])
+            columns=col_list)
     except (Exception, psycopg2.Error) as error:
         print("Error while connecting to PostgreSQL", error)
     finally:
